@@ -1,39 +1,39 @@
-from math import log10
-from sympy import symbols, diff
-from numpy.linalg import det
+from math import log10, log
 
-f1 = "2 * x ** 2 - x * y - 5 * x + 1"
-f2 = "x + 3 * log10(x) - y ** 2"
+def f1(x, y):
+    return 2 * x ** 2 - x * y - 5 * x + 1
 
-def f(expression, x, y):
-    print(expression)
-    return eval(expression)
+def f2(x, y):
+    return x + 3 * log10(x) - y ** 2
 
-def dfx(expression, x0):
-    expression = str(diff(expression, x))
+def detJ(x, y):
+    return (3 / (log(10) * x) + 1) * x - 2 * (-y + 4 * x - 5) * y
     
-    return f(expression, x0, 0)
+def detM1(x, y):
+    return x * (-y ** 2 + 3 * log10(x) + x) - 2 * y * (-x * y + 2 * x ** 2 - 5 * x + 1)    
+
+def detM2(x, y):
+    return (-y + 4 * x - 5) * (-y ** 2 + 3 * log10(x) + x) - (3 / (log(10) * x) +1) * (-x * y + 2 * x ** 2 - 5 * x +1)
+
+#Do h/k in Maxima (?)
+
+def newton(x0, y0, nMax):  
+    x = x0
+    y = y0
+    first = True
     
-def dfy(expression, y0):
-    expression = str(diff(expression, y))
-    
-    return f(expression, 0, y0)
-
-x, y = symbols('x y', real = True)
-
-#diff(f1, x)
-
-def newton(x0, y0, nMax):        
-    for i in range(nMax):
-        J = [[dfx(f1, x0), dfy(f1, y0)], [dfx(f2, x0), dfy(f2, y0)]]
-        J1 = [[f(f1, x0, y0), dfy(f1, y0)], [f(f2, x0, y0), dfy(f2, y0)]]
+    while((x != x0 and y != y0) or first == True):
+        x0 = x
+        y0 = y
         
-        h = - det(J1) / det(J)    
-        k = - det(J1[::-1]) / det(J)
+        h = detM1(x0, y0) / detJ(x0, y0)
+        k = detM2(x0, y0) / detJ(x0, y0)
         
-        x0 += h
-        y0 += k
-    
+        x -= h
+        y -= k
+        
+        first = False
+
     return x, y
 
-print(newton(1, 5, 20))
+print(newton(4, 2, 100))
