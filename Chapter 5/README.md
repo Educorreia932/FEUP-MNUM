@@ -1,0 +1,1 @@
+![Figure](https://raw.githubusercontent.com/Educorreia932/MNUM/master/Chapter%4/Figure.png)
