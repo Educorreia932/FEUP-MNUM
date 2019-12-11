@@ -6,7 +6,10 @@ def f1(x, y):
 def f2(x, y):
     return x * y + sin(x)
 
-def simpson1(points, h):
+def trapeze(points, h):     
+    return h / 2 * (points[0] + points[-1] + 2 * sum(points))  
+
+def simpson(points, h):
     n = len(points)
     odd_terms = 0
     even_terms = 0 
@@ -25,7 +28,7 @@ def simpson1(points, h):
     
     return integral
 
-def simpson2(x0, y0, x1, y1, hx, hy):
+def cubatura(x0, y0, x1, y1, hx, hy, method):
     nx = int((x1 - x0) / hx)
     ny = int((y1 - y0) / hy)
     
@@ -38,12 +41,14 @@ def simpson2(x0, y0, x1, y1, hx, hy):
         for j in range(nx):
             row.append(f2(x0 + j * hx, y0 + i * hy))       
         
-        values.append(simpson1(row, hx))
+        if method == "trapeze":
+            values.append(trapeze(row, hx))
         
-    return simpson1(values, hy)
+        elif method == "simpson":
+            values.append(simpson(row, hx))
+        
+    return simpson(values, hy)
     
-print(simpson2(0, 0, 2, 2, 0.1, 0.1))
+print(cubatura(0, 0, 2, 2, 0.1, 0.1, "trapeze"))
+print(cubatura(0, 0, 2, 2, 0.1, 0.1, "simpson"))
     
-        
-        
-        
